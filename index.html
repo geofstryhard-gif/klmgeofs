@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KLM Virtual Airline — GeoFS</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Leaflet CSS for route map -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzDLHi8Wg0B2C2R6F1o7QPQvCk="
+    crossorigin=""
+  />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/62/KLM_logo.svg" alt="KLM VA" class="logo" />
+        <span class="brand-text">KLM Virtual — GeoFS</span>
+      </div>
+      <nav class="menu">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#fleet">Fleet</a>
+        <a href="#routes">Routes</a>
+        <a href="#events">Events</a>
+        <a href="#pilot">Pilot center</a>
+        <a href="#join" class="btn">Join</a>
+      </nav>
+    </div>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="container hero-inner">
+      <h1>Fly the Dutch way in GeoFS</h1>
+      <p>Join KLM Virtual for structured schedules, immersive events, and professional flight ops—open to all skill levels.</p>
+      <div class="cta">
+        <a href="#join" class="btn btn-primary">Apply as pilot</a>
+        <a href="#routes" class="btn btn-secondary">Explore routes</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="container">
+      <h2>About our virtual airline</h2>
+      <div class="grid two">
+        <div>
+          <p>We simulate KLM operations in GeoFS: real-world-inspired routes, fleet discipline, and events that balance realism and fun. Our focus: safety, airmanship, and community.</p>
+          <ul class="bullets">
+            <li><strong>Ops style:</strong> SID/STAR when practical, hand-flown visuals encouraged</li>
+            <li><strong>ATC:</strong> Structured phraseology during events, flexible in casual flights</li>
+            <li><strong>PIREP:</strong> Simple flight reports with screenshots/logs</li>
+            <li><strong>Community:</strong> Discord-based briefings, mentoring, and crew rooms</li>
+          </ul>
+        </div>
+        <div class="card info">
+          <h3>Resources</h3>
+          <ul class="links">
+            <li><strong>Discord:</strong> <a href="#" id="discordLink">Invite</a></li>
+            <li><strong>Docs:</strong> <a href="#" id="sopLink">SOP & liveries</a></li>
+            <li><strong>Events:</strong> <a href="#events">Calendar</a></li>
+            <li><strong>Careers:</strong> <a href="#join">Pilot application</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fleet" class="section alt">
+    <div class="container">
+      <h2>Fleet</h2>
+      <p>We operate a streamlined GeoFS fleet for reliability and variety. Type ratings are quick, and aircraft swaps are coordinated with dispatch.</p>
+      <div id="fleetGrid" class="grid three"></div>
+    </div>
+  </section>
+
+  <section id="routes" class="section">
+    <div class="container">
+      <h2>Routes and network</h2>
+      <p>Our network centers on Amsterdam (EHAM), with regional and long-haul sectors. Click a route to view details.</p>
+      <div class="grid two">
+        <div>
+          <div id="map" class="map"></div>
+        </div>
+        <div>
+          <div class="card">
+            <h3>Active routes</h3>
+            <ul id="routeList" class="route-list"></ul>
+          </div>
+          <div class="card">
+            <h3>Route brief</h3>
+            <div id="routeBrief" class="route-brief">
+              <p>Select a route from the list or map.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        <strong>Tip:</strong> Prefer the GeoFS built-in weather? We brief winds aloft at FL100/FL350 and plan alternates conservatively.
+      </div>
+    </div>
+  </section>
+
+  <section id="events" class="section alt">
+    <div class="container">
+      <h2>Events</h2>
+      <p>From calm dawn hops to heavy-bank holiday shuttles—our calendar mixes training and showcase flights.</p>
+      <div id="eventGrid" class="grid two"></div>
+    </div>
+  </section>
+
+  <section id="pilot" class="section">
+    <div class="container">
+      <h2>Pilot center</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Login</h3>
+          <form id="loginForm">
+            <label>
+              <span>Callsign</span>
+              <input type="text" id="callsign" placeholder="KLM###" required />
+            </label>
+            <label>
+              <span>Password</span>
+              <input type="password" id="password" placeholder="••••••••" required />
+            </label>
+            <button type="submit" class="btn btn-primary">Log in</button>
+            <p class="muted">Demo only—no data stored.</p>
+          </form>
+          <div id="loginStatus" class="status"></div>
+        </div>
+        <div class="card">
+          <h3>Submit PIREP</h3>
+          <form id="pirepForm">
+            <label>
+              <span>Flight number</span>
+              <input type="text" id="flightNumber" placeholder="KL1234" required />
+            </label>
+            <label>
+              <span>From / To</span>
+              <div class="inline">
+                <input type="text" id="dep" placeholder="EHAM" maxlength="4" required />
+                <input type="text" id="arr" placeholder="EBBR" maxlength="4" required />
+              </div>
+            </label>
+            <label>
+              <span>Aircraft</span>
+              <select id="aircraft" required></select>
+            </label>
+            <label>
+              <span>Flight time</span>
+              <input type="text" id="flightTime" placeholder="01:20" required />
+            </label>
+            <label>
+              <span>Notes / link</span>
+              <input type="url" id="notes" placeholder="Screenshot or stream URL (optional)" />
+            </label>
+            <button type="submit" class="btn btn-secondary">Send PIREP</button>
+          </form>
+          <div id="pirepStatus" class="status"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="join" class="section join">
+    <div class="container">
+      <h2>Join KLM Virtual</h2>
+      <p>Ready to fly? We welcome new pilots, trainers, dispatchers, and event hosts.</p>
+      <div class="grid two">
+        <div class="card">
+          <h3>Pilot application</h3>
+          <form id="applyForm">
+            <label>
+              <span>Name</span>
+              <input type="text" id="appName" required />
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" id="appEmail" required />
+            </label>
+            <label>
+              <span>GeoFS username</span>
+              <input type="text" id="appUser" required />
+            </label>
+            <label>
+              <span>Experience</span>
+              <select id="appExp" required>
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
+              </select>
+            </label>
+            <label>
+              <span>Why KLM VA?</span>
+              <textarea id="appWhy" rows="4" placeholder="Tell us what you’re excited to fly."></textarea>
+            </label>
+            <button type="submit" class="btn btn-primary">Submit application</button>
+          </form>
+          <div id="applyStatus" class="status"></div>
+        </div>
+        <div class="card info">
+          <h3>What we look for</h3>
+          <ul class="bullets">
+            <li><strong>Attitude:</strong> Respectful, safe, and curious</li>
+            <li><strong>Commitment:</strong> 1–2 flights per month encouraged</li>
+            <li><strong>Teamwork:</strong> Communicate on Discord, ask questions</li>
+            <li><strong>Growth:</strong> We train all skill levels</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Unofficial fan project for GeoFS. Not affiliated with KLM Royal Dutch Airlines.</p>
+      <p>© KLM Virtual — GeoFS Community</p>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20EnQ9HqvG1zVjX+M1Q6rJwIJwG8L196G2G2Q6XkM3Y="
+    crossorigin=""
+  ></script>
+  <script src="app.js"></script>
+</body>
+</html>
