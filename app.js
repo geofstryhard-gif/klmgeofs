@@ -2,32 +2,6 @@
 const DISCORD_INVITE = "https://discord.gg/your-invite";
 
 
-const FLEET = [
-  {
-    name: "Embraer 175",
-    code: "E175",
-    role: "Regional",
-    range: "3,700 km",
-    notes: "Used for regional flights in Netherlands.",
-    img: "https://upload.wikimedia.org/wikipedia/commons/8/8e/KLM_Cityhopper_Embraer_ERJ-175STD_PH-EXS_at_Schiphol_24-11-2022.jpg"
-  },
-  {
-    name: "Boeing 737-800",
-    code: "B738",
-    role: "Short/medium haul",
-    range: "5,600 km",
-    notes: "Workhorse for European network; RNAV-friendly.",
-    img: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Berlin_Brandenburg_Airport_KLM_Royal_Dutch_Airlines_Boeing_737-8K2%28WL%29_PH-BXB_%28DSC07657%29.jpg"
-  },
-  {
-    name: "Boeing 777-300ER",
-    code: "B77W",
-    role: "Long haul",
-    range: "13,600 km",
-    notes: "Stable at cruise, strong crosswind authority.",
-    img: "https://upload.wikimedia.org/wikipedia/commons/f/fb/KLM_Boeing_777-300ER_PH-BVA_%282873338662%29.jpg"
-  }
-];
 
 const ROUTES = [
   {
